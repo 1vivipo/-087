@@ -1,0 +1,43 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x android-app/gradlew || true
+    
+    - name: Build APK
+      run: |
+        cd android-app
+        ./gradlew assembleRelease || true
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: love-agent-apk
+        path: android-app/app/build/outputs/apk/release/*.apk
+    
+    - name: Create Release
+      if: success()
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        files: android-app/app/build/outputs/apk/release/*.apk
