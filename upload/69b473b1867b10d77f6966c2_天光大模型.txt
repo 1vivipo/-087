@@ -1,0 +1,112 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
+
+# ======================
+# 1. 模型超参数（≈400MB）
+# ======================
+VOCAB_SIZE    = 32000
+DIM_MODEL     = 512
+N_LAYER       = 8
+N_HEAD        = 8
+MAX_SEQ_LEN   = 512
+FF_DIM        = 2048
+BATCH_SIZE    = 8
+LR            = 1e-4
+
+# ======================
+# 2. 模型结构
+# ======================
+class TianGuangBlock(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.attn = nn.MultiheadAttention(DIM_MODEL, N_HEAD, batch_first=True)
+        self.norm1 = nn.LayerNorm(DIM_MODEL)
+        self.norm2 = nn.LayerNorm(DIM_MODEL)
+        self.ffn = nn.Sequential(
+            nn.Linear(DIM_MODEL, FF_DIM),
+            nn.GELU(),
+            nn.Linear(FF_DIM, DIM_MODEL)
+        )
+
+    def forward(self, x):
+        attn_out, _ = self.attn(x, x, x)
+        x = self.norm1(x + attn_out)
+        ffn_out = self.ffn(x)
+        x = self.norm2(x + ffn_out)
+        return x
+
+class TianGuangMini(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.emb = nn.Embedding(VOCAB_SIZE, DIM_MODEL)
+        self.pos_emb = nn.Embedding(MAX_SEQ_LEN, DIM_MODEL)
+        self.layers = nn.ModuleList([TianGuangBlock() for _ in range(N_LAYER)])
+        self.head = nn.Linear(DIM_MODEL, VOCAB_SIZE)
+
+    def forward(self, x):
+        seq_len = x.size(1)
+        pos = torch.arange(seq_len, device=x.device).unsqueeze(0)
+        x = self.emb(x) + self.pos_emb(pos)
+        for layer in self.layers:
+            x = layer(x)
+        return self.head(x)
+
+# ======================
+# 3. 简易对话数据集
+# ======================
+class SimpleChatDataset(Dataset):
+    def __init__(self):
+        self.data = [
+            ("你好", "你好呀！我是你的天光AI"),
+            ("你是谁", "我是你亲手训练的小模型"),
+            ("今天开心吗", "看到你就很开心！"),
+        ]
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        user, assistant = self.data[idx]
+        return user, assistant
+
+# ======================
+# 4. 训练代码
+# ======================
+def train():
+    model = TianGuangMini().cuda()
+    dataset = SimpleChatDataset()
+    loader = DataLoader(dataset, batch_size=BATCH_SIZE)
+    opt = torch.optim.AdamW(model.parameters(), lr=LR)
+    ce = nn.CrossEntropyLoss()
+
+    for epoch in range(10):
+        for user, assistant in loader:
+            # 这里智谱会帮你补全：文本转token
+            # x = tokenize(user)
+            # y = tokenize(assistant)
+            # logits = model(x)
+            # loss = ce(...)
+            print(f"Epoch {epoch} | 训练中...")
+
+    torch.save(model.state_dict(), "tianGuang_chat.pth")
+    print("✅ 模型训练完成，已保存：tianGuang_chat.pth")
+
+# ======================
+# 5. 推理对话（你APP用）
+# ======================
+def chat(model, user_input):
+    # 智谱帮你补全token编码/解码
+    print("用户：", user_input)
+    print("天光AI：我在！")
+
+# ======================
+# 6. 启动
+# ======================
+if __name__ == "__main__":
+    model = TianGuangMini()
+    print("天光小模型初始化成功！")
+    print("参数量：", f"{sum(p.numel() for p in model.parameters()) / 1e6:.2f}M")
+    # train()       # 火山训练用
+    # chat(model, "你好")
