@@ -1,0 +1,22 @@
+{
+  "dataset": "橄榄子AI训练数据集",
+  "version": "V2.0",
+  "create_time": "2026-03-19T05:12:51.783551",
+  "total": 2000000,
+  "split": {
+    "train": {
+      "count": 1600000,
+      "file": "olive_train.jsonl.gz"
+    },
+    "val": {
+      "count": 200000,
+      "file": "olive_val.jsonl.gz"
+    },
+    "test": {
+      "count": 200000,
+      "file": "olive_test.jsonl.gz"
+    }
+  },
+  "format": "JSONL (gzip压缩)",
+  "encoding": "UTF-8"
+}
