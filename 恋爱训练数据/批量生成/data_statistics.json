@@ -1,0 +1,52 @@
+{
+  "dataset_name": "橄榄子AI训练数据集",
+  "version": "V2.0",
+  "create_time": "2024-03-19",
+  "total_count": 2000000,
+  "format": "JSONL",
+  "encoding": "UTF-8",
+  
+  "stage_distribution": {
+    "陌生期": {"count": 700000, "percentage": "35%"},
+    "熟悉期": {"count": 600000, "percentage": "30%"},
+    "暧昧期": {"count": 500000, "percentage": "25%"},
+    "其他": {"count": 200000, "percentage": "10%"}
+  },
+  
+  "data_source": {
+    "情境数据": {"count": 2000000, "percentage": "100%"},
+    "说明": "基于书籍知识模板生成"
+  },
+  
+  "files": [
+    {"name": "olive_batch_0001.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0002.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0003.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0004.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0005.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0006.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0007.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0008.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0009.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0010.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0011.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0012.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0013.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0014.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0015.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0016.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0017.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0018.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0019.jsonl.gz", "count": 100000},
+    {"name": "olive_batch_0020.jsonl.gz", "count": 100000}
+  ],
+  
+  "total_size_compressed": "100MB",
+  "total_size_uncompressed": "~1.6GB",
+  
+  "usage": {
+    "train_set": "80% (160万条)",
+    "val_set": "10% (20万条)",
+    "test_set": "10% (20万条)"
+  }
+}
